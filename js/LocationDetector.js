@@ -1,5 +1,5 @@
 const Device = {
-	isAndroid: !true,
+	isAndroid: true,
 	isIos: false,
 }
 
@@ -36,6 +36,7 @@ class LocationDetector {
 			if (!Device.isAndroid) {
 				hasPermissionCallback({enableHighAccuracy: true, timeout: 10000, maximumAge: 0, distanceFilter: 0});
 			} else {
+				//hasPermissionCallback({ distanceFilter: 0});
 				try {
 			    PermissionsAndroid.request(
 			      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -46,7 +47,7 @@ class LocationDetector {
 			    ).then(granted => {
 				    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 				      console.log("You can use the camera")
-				      hasPermissionCallback({ distanceFilter: 0});
+				      hasPermissionCallback({ distanceFilter: 10, enableHighAccuracy: true, });
 				    } else {
 				      console.log("Camera permission denied")
 				      alert('You can still allow this permission in Settings -> Apps -> Our App -> Permissions -> Location')
