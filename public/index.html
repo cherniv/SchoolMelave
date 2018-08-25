@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+    <style>
+      html, body, #map {
+        height: 100%;
+      }
+    </style>
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/5.4.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/5.4.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/5.4.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/5.4.1/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/5.4.1/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+    <script>
+      var map,
+          mapReady = false,
+          firebaseReady = false;
+
+      var initMap = function (arg) {
+       // console.log('MAP');
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 31.7472464, lng: 35.185528},
+          zoom: 15
+        });
+        //firebase.database().ref('lastday').once('value').then(data=>console.log('DATA', data, data.val()))
+        mapReady = true;
+        console.log(mapReady, firebaseReady)
+        if (mapReady && firebaseReady) {
+          placeMarkers()
+        }
+      }
+
+      var placeMarkers = function () {
+        firebase.database().ref('data').once('value').then(response => {
+          response.forEach(point => {
+            point = point.val();
+            //console.log('Point:', point, new Date(point.timestamp));
+            var position = new google.maps.LatLng(point.latitude, point.longitude);
+            var marker = new google.maps.Marker({
+              position,
+              map,
+              title: (new Date(point.timestamp)).toTimeString().split(' ')[0]
+            });
+          })
+        })
+      }
+    </script>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZKU51jjO_-G0B9UFx3HBxY1N5UUl5U_E&callback=initMap">
+    </script>
+    
+    <style media="screen">
+      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
+      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
+      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
+      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; position: absolute; width: 160px; background-color: rgba(255,255,255,0.4); left: 50%; top: 0; margin-left: -80px; }
+      @media (max-width: 600px) {
+        body, #message { margin-top: 0; background: white; box-shadow: none; }
+        body { border-top: 16px solid #ffa100; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="map"></div>
+    <p id="load">Firebase SDK Loading&hellip;</p>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // // The Firebase SDK is initialized and available here!
+        //
+        // firebase.auth().onAuthStateChanged(user => { });
+        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+        // firebase.messaging().requestPermission().then(() => { });
+        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+        //
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+        try {
+          let app = firebase.app();
+          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+          //document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
+          //firebase.database().ref('lastday').once('value').then(data=>console.log('DATA', data, data.val()))
+          firebaseReady = true;
+                console.log(mapReady, firebaseReady)
+
+          if (mapReady && firebaseReady) {
+            placeMarkers()
+          }
+        } catch (e) {
+          console.error(e);
+          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
+        }
+      });
+    </script>
+  </body>
+</html>
